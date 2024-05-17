@@ -67,6 +67,19 @@ Finally for the attention-based Seq2Seq models, run train_attention.py
 python ./models/train_attention.py
 ```
 
+```python
+    parser.add_argument('-ct', '--cell_type', help="Choices:[RNN, GRU]", type=str, default='GRU')
+    parser.add_argument('-b', '--batch_size', help="Batch size used to train neural network.", type=int, default=64)
+    parser.add_argument('-o', '--optimizer', help = 'choices: [ "adam", "nadam"]', type=str, default = 'adam')
+    parser.add_argument('-lr', '--learning_rate', help = 'Learning rate used to optimize model parameters', type=float, default=0.0005)
+    parser.add_argument('-em', '--embedding_size', help='size of embedding', type=int, default=64)
+    parser.add_argument('-hd', '--hidden_dim', help='choices:[64,128,256,512]',type=int, default=256)
+    parser.add_argument('-dp', '--dropout', help='choices:[0, 0.1, 0.2, 0.3]',type=float, default=0.5)
+    parser.add_argument('-tf', '--teacher_forcing_ratio', help='choices:[0,0.2,0.3,0.5,0.7]',type=float, default=0.5)
+    parser.add_argument('-epc', '--epochs', help = 'Give the number of epochs - ideal between 20 to 30', default = 30)
+
+```
+
 To run the sweep for attention based models, run run_sweep_attention.py
 
 ```
