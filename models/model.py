@@ -31,22 +31,17 @@ class Encoder(nn.Module):
         self.num_layers = num_layers
         self.embedded_size = embedding_size
         self.cell_type = cell_type
-        self.bidirectional=bidirectional
         self.dropout = nn.Dropout(dp)
-
-        if bidirectional:
-            self.direction=2
-        else:
-            self.direction=1  
-        
+        self.direction = 2 if bidirectional else 1
+        self.bidirectional = bidirectional
         self.embedding_layer = nn.Embedding(input_dim,embedding_size)
 
         if cell_type == 'RNN':
-              self.rnn = nn.RNN(embedding_size, hidden_dim, num_layers, dropout=dp,bidirectional=bidirectional)
+              self.rnn = nn.RNN(self.embedding_size, self.hidden_dim, self.num_layers, dropout=dp,bidirectional=self.bidirectional)
         elif cell_type == 'LSTM':
-              self.rnn = nn.LSTM(embedding_size, hidden_dim, num_layers, dropout=dp,bidirectional=bidirectional)
+              self.rnn = nn.LSTM(self.embedding_size, self.hidden_dim, self.num_layers, dropout=dp,bidirectional=self.bidirectional)
         elif cell_type == 'GRU':
-              self.rnn = nn.GRU(embedding_size, hidden_dim, num_layers, dropout=dp,bidirectional=bidirectional)
+              self.rnn = nn.GRU(self.embedding_size, self.hidden_dim, self.num_layers, dropout=dp,bidirectional=self.bidirectional)
         else:
             raise ValueError("Only valid cell types are: RNN, LSTM and GRU")     
 
@@ -81,21 +76,16 @@ class Decoder(nn.Module):
 
     def __init__(self, output_dim, hidden_dim, embedding_size, num_layers, bidirectional, cell_type, dp):
         super(Decoder, self).__init__()
-        print ('Decoder Output_dim: ', output_dim)
-        print ('Decoder Hidden_dim: ', hidden_dim)
-        print ('Decoder Embedding_size: ', embedding_size)
+        # print ('Decoder Output_dim: ', output_dim)
+        # print ('Decoder Hidden_dim: ', hidden_dim)
+        # print ('Decoder Embedding_size: ', embedding_size)
         self.output_dim = output_dim
         self.hidden_dim = hidden_dim
         self.embedded_size=embedding_size     
         self.num_layers = num_layers
         self.cell_type = cell_type
-        self.bidirectional=bidirectional
         self.dropout = nn.Dropout(dp)
-        
-        if bidirectional:
-            self.direction=2
-        else:
-            self.direction=1  
+        self.direction = 2 if bidirectional else 1
 
         self.embedding_layer = nn.Embedding(output_dim,embedding_size)
         print ('output_dim: ', output_dim, hidden_dim, embedding_size)
@@ -119,6 +109,27 @@ class Decoder(nn.Module):
 
 
 class EncoderDecoder(nn.Module):
+    """
+    A sequence-to-sequence model with an encoder and a decoder, supporting bidirectional encoding 
+    and optional teacher forcing during training.
+
+    Args:
+        encoder (nn.Module): The encoder module, which processes the input sequence.
+        decoder (nn.Module): The decoder module, which generates the output sequence.
+        cell_type (str): The type of RNN cell used ('RNN', 'LSTM', or 'GRU').
+        bidirectional (bool): Whether the encoder is bidirectional.
+        teacher_forcing_ratio (float): The probability of using teacher forcing during training.
+        device (torch.device): The device on which the model is run (e.g., 'cpu' or 'cuda').
+
+    Forward Args:
+        src (Tensor): The source input sequence tensor of shape (src_len, batch_size).
+        tgt (Tensor): The target output sequence tensor of shape (tgt_len, batch_size).
+        teacher_forcing_ratio (float): The probability of using teacher forcing during this forward pass.
+
+    Forward Returns:
+        outputs (Tensor): The tensor containing the output sequences of shape (tgt_len, batch_size, tgt_vocab_size).
+    """
+
     def __init__(self, encoder, decoder, cell_type, bidirectional, teacher_forcing_ratio, device):
         super(EncoderDecoder, self).__init__()
         self.encoder = encoder
@@ -172,6 +183,4 @@ class EncoderDecoder(nn.Module):
             else:
                 decoder_input= idx.unsqueeze(0)
 
-        decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden)
-        
         return outputs

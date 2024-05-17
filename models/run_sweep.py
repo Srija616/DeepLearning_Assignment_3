@@ -152,14 +152,14 @@ def train_sweep():
     
     train_dataloader, val_dataloader, test_dataloader, src_idx_to_char, tgt_idx_to_char = dataloader(train_csv, valid_csv, test_csv, config.batch_size)
     
-    INPUT_DIM = len(src_idx_to_char)  # vocab size for English : 26 + 1 (pad) + 1 (unk)
-    OUTPUT_DIM = len(tgt_idx_to_char) # vocab size for Hindi : 64 + 1 (pad) + 1 (unk)
-    EPOCHS = 30
+    input_dim = len(src_idx_to_char)  # vocab size for English : 26 + 1 (pad) + 1 (unk)
+    output_dim = len(tgt_idx_to_char) # vocab size for Hindi : 64 + 1 (pad) + 1 (unk)
+    epochs = 30
 
-    print ('Input dimension is:', INPUT_DIM, 'Output dimension is:', OUTPUT_DIM)
+    print ('Input dimension is:', input_dim, 'Output dimension is:', output_dim)
     
-    encoder = Encoder(INPUT_DIM, config.hidden_dim, config.embedding_size, config.num_layers, config.bidirectional, config.cell_type, config.dropout).to(device)
-    decoder = Decoder(OUTPUT_DIM, config.hidden_dim, config.embedding_size, config.num_layers, config.bidirectional, config.cell_type, config.dropout).to(device)
+    encoder = Encoder(input_dim, config.hidden_dim, config.embedding_size, config.num_layers, config.bidirectional, config.cell_type, config.dropout).to(device)
+    decoder = Decoder(output_dim, config.hidden_dim, config.embedding_size, config.num_layers, config.bidirectional, config.cell_type, config.dropout).to(device)
 
     model = EncoderDecoder(encoder, decoder, config.cell_type, config.bidirectional, config.teacher_forcing_ratio, device).to(device)
 
@@ -173,7 +173,7 @@ def train_sweep():
 
     # Start the training
     prev_val_loss = 10000007
-    for epoch in range(EPOCHS):
+    for epoch in range(epochs):
         print ('Started {epoch}...')
         epoch_loss = 0
         model.train()
@@ -224,7 +224,7 @@ def train_sweep():
 
         print(f"Epoch: {epoch}, Loss: {epoch_loss / (len(train_dataloader))}, Val Acc: {val_acc}, Val loss: {val_loss}")
 
-        wandb.log({'epoch': EPOCHS, 'train_loss': loss.item(), 'test_acc': test_acc,'val_acc': val_acc,'test_loss': test_loss,'val_loss': val_loss})
+        wandb.log({'epoch': epochs, 'train_loss': loss.item(), 'test_acc': test_acc,'val_acc': val_acc,'test_loss': test_loss,'val_loss': val_loss})
         # Save the best model
     wandb.run.save()
     wandb.run.finish()
@@ -233,5 +233,6 @@ def train_sweep():
 
 # import os
 # os.system('wandb login --relogin')
-sweep_id = wandb.sweep(sweep_config, project="DL-Assignment3", entity="srija17199")
-wandb.agent(sweep_id, function=train_sweep,count=20, project='DL-Assignment3')
+sweep_id = wandb.sweep(sweep_config, project='DL-Assignment3', entity="srija17199")
+# wandb.agent(sweep_id, function=train_sweep,count=20, project='DL-Assignment3', entity="srija17199")
+wandb.agent("gk0o36vr", function=train_sweep,count=20, project='DL-Assignment3', entity="srija17199")

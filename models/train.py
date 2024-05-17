@@ -213,12 +213,9 @@ def train(args):
             torch.save(model.state_dict(), best_model_path)
             print(f"Best model saved to {best_model_path}")
 
-        # print(f"Epoch: {epoch}, Loss: {epoch_loss / (len(train_dataloader))}")
 
         print(f"Epoch: {epoch}, Loss: {epoch_loss / (len(train_dataloader))}, Val Acc: {val_acc}, Val loss: {val_loss}")
-        # print(f"Epoch: {epoch}, Loss: {epoch_loss / (len(train_dataloader))})
-        #wandb.log({'epoch': epoch, 'loss': loss.item(), 'test_acc': test_acc,'train_acc': train_acc,'val_acc': val_acc})
-    
+
 
 
 
@@ -241,45 +238,8 @@ if __name__=='__main__':
     parser.add_argument('-pn' , '--project_name', help='Project name used to track experiments in Weights & Biases dashboard' , type=str, default='CS6910_Assignment3_Q1')
     parser.add_argument('-we', '--wandb_entity' , help='Wandb Entity used to track experiments in the Weights & Biases dashboard.' , type=str, default='srija17199')
 
-
-    
-
     args = parser.parse_args()
     train(args)
-    # batch_size = args.batch_size
-    # cell_type = args.cell_type
-    # optimizer = args.optimizer
-    # learning_rate = args.learning_rate
-    # embedding_size = args.embedding_size
-    # hidden_dim = args.hidden_dim
-    # dropout = args.dropout
-    # num_layers = args.num_layers
-    # teacher_forcing_ratio = args.teacher_forcing_ratio
-    # epochs = args.epochs
-    # project_name = args.project_name
-    # wandb_entity = args.wandb_entity
-    
-    if args.bidirectional.lower() == 'true':
-        bidirectional = True
-    elif args.bidirectional.lower() == 'false':
-        bidirectional = False
-    else:
-        raise ValueError("Invalid value for --bidirectional. Use 'True' or 'False'.")
-
-    # train(cell_type=args.cell_type,
-    # batch_size=args.batch_size,
-    # optimizer=args.optimizer,
-    # learning_rate=args.learning_rate,
-    # embedding_size=args.embedding_size,
-    # hidden_dim=args.hidden_dim,
-    # dropout=args.dropout,
-    # num_layers=args.num_layers,
-    # bidirectional=bidirectional,
-    # teacher_forcing_ratio=args.teacher_forcing_ratio,
-    # epochs=args.epochs,
-    # project_name = args.project_name, 
-    # wandb_entity = args.wandb_entity)
-
        
 
     
