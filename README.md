@@ -4,7 +4,9 @@ https://wandb.ai/srija17199/DL-Assignment3/reports/Assignment-3--Vmlldzo3OTg3NDk
 
 You can either create a new conda environment and install requirements.txt, or you can use any environment with the libraries specified in requirements.txt
 
-## Question 1
+Note that the dataloader, accuracy calculators and Vocab calculations are defined in utils.py and model.py, model_attention.py has the implementation for Encoder, Decoder and EncoderDecoder classes.
+
+## Answer 1
 To implement a Vanilla Seq2Seq model that performs transliteration for English to Hindi, run train.py. It takes the arguments given below, along with one default setting.
 
 ```
@@ -28,7 +30,7 @@ python ./models/train.py
     parser.add_argument('-we', '--wandb_entity' , help='Wandb Entity used to track experiments in the Weights & Biases dashboard.' , type=str, default='srija17199')
 ```
 
-## Question 2
+## Answer 2
 To run the sweeps for Vanilla Seq2Seq, you can start run_sweep.py. Please provide suitable entity and project name for wandb and relogin to wandb before running the sweeps.
 
 ```
@@ -56,4 +58,17 @@ sweep_config= {
     'teacher_forcing_ratio':{"values":[0.2, 0.7]},
     }
 }
+```
+
+### Answer 5
+
+Finally for the attention-based Seq2Seq models, run train_attention.py
+```
+python ./models/train_attention.py
+```
+
+To run the sweep for attention based models, run run_sweep_attention.py
+
+```
+python ./models/run_sweep_attention.py
 ```
