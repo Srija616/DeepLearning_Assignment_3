@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 class Encoder(nn.Module):
     """
@@ -60,8 +60,8 @@ class Encoder(nn.Module):
         else:
             output, hidden = self.rnn(embedded_out) # For RNN or GRU returns the output and the hidden state
             return output,hidden
-        
-        
+
+      
 class Decoder(nn.Module):
     """
     Decoder module for sequence-to-sequence models.
@@ -81,9 +81,9 @@ class Decoder(nn.Module):
 
     def __init__(self, output_dim, hidden_dim, embedding_size, num_layers, bidirectional, cell_type, dp):
         super(Decoder, self).__init__()
-        print ('Output_dim: ', output_dim)
-        print ('Hidden_dim: ', hidden_dim)
-        print ('Embedding_size: ', embedding_size)
+        print ('Decoder Output_dim: ', output_dim)
+        print ('Decoder Hidden_dim: ', hidden_dim)
+        print ('Decoder Embedding_size: ', embedding_size)
         self.output_dim = output_dim
         self.hidden_dim = hidden_dim
         self.embedded_size=embedding_size     
@@ -134,7 +134,6 @@ class EncoderDecoder(nn.Module):
         tgt_vocab_size = self.decoder.output_dim
         
         outputs = torch.zeros(max_len, batch_size, tgt_vocab_size).to(device)  #shape of the output is [max_len, batch_size, tgt_vocab_size]
-        
         encoder_output, encoder_hidden = self.encoder(src)
 
         if self.bidirectional:
@@ -165,8 +164,7 @@ class EncoderDecoder(nn.Module):
             outputs[t] = decoder_output
             max_pr, idx = torch.max(decoder_output,dim=2)
             idx=idx.view(tgt.shape[1])
-            
-            
+
             # Determine the next decoder input using teacher forcing or predicted output
             teacher_force = teacher_forcing_ratio > torch.rand(1)
             if teacher_force:

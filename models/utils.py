@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 class Vocab:
     def __init__(self, file_path, src_lang, tgt_lang):
@@ -108,6 +108,4 @@ class TransliterationDataLoader(Dataset):
         tgt_tensor = torch.LongTensor(tgt_indices)
 
         return src_tensor, tgt_tensor, src_len, tgt_len
-
-
 
